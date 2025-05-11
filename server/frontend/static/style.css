@@ -124,3 +124,79 @@ img{
     text-align:center;
     box-shadow: 2px 2px 3px #999;  
 }
+
+
+
+
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+.contact-card {
+    width: 90%;
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.header-image {
+    position: relative;
+    text-align: center;
+}
+
+.header-image img {
+    width: 100%;
+    height: auto;
+}
+
+.sample-text {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    color: #ffffffaa;
+    text-shadow: 2px 2px 8px #000;
+}
+
+.contact-content {
+    display: flex;
+    padding: 30px;
+    align-items: center;
+}
+
+.contact-left {
+    flex: 1;
+    text-align: center;
+}
+
+.contact-left .icon {
+    width: 100px;
+}
+
+.divider {
+    width: 1px;
+    background-color: #ccc;
+    height: 200px;
+    margin: 0 20px;
+}
+
+.contact-right {
+    flex: 2;
+    font-size: 16px;
+    color: #333;
+}
+
+.contact-right p {
+    margin: 10px 0;
+    color: #1a73e8;
+}
