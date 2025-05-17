@@ -28,8 +28,8 @@ SECRET_KEY =\
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS=['localhost','https://saristide99-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/']
-CSRF_TRUSTED_ORIGINS=['https://saristide99-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/']
+ALLOWED_HOSTS=['localhost','https://saristide99-8008.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/']
+CSRF_TRUSTED_ORIGINS=['https://saristide99-8008.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [],
@@ -88,6 +88,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'PASSWORD': 'bBo3R0aNUSECSJTgD5DzwL4P',
     }
 }
 

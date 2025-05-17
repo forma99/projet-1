@@ -14,7 +14,7 @@ import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .populate import initiate
-
+from .models import CarMake, CarModel
 from .restapis import get_request, analyze_review_sentiments, post_review
 
 # Get an instance of a logger
@@ -22,6 +22,19 @@ logger = logging.getLogger(__name__)
 
 
 # Create your views here.
+
+def get_cars(request):
+    count = CarMake.objects.filter().count()
+    print(count)
+    if(count == 0):
+        initiate()
+    car_models = CarModel.objects.select_related('car_make')
+    cars = []
+    for car_model in car_models:
+        cars.append({"CarModel": car_model.name, "CarMake": car_model.car_make.name})
+    return JsonResponse({"CarModels":cars})
+
+
 
 # Create a `login_request` view to handle sign in request
 @csrf_exempt
@@ -119,3 +132,35 @@ def get_dealer_details(request, dealer_id):
 # Create a `add_review` view to submit a review
 # def add_review(request):
 # ...
+
+@csrf_exempt
+def add_review(request):
+    """
+    Reçoit une requête POST contenant le JSON d’un avis et la transmet via post_review
+    Ex. du corps (application/json) :
+    {
+      "name": "Jean Dupont",
+      "dealership": 15,
+      "review": "Super expérience !",
+      "purchase": true,
+      "purchase_date": "2025-05-01",
+      "car_make": "Toyota",
+      "car_model": "Corolla",
+      "car_year": 2021
+    }
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Seules les requêtes POST sont autorisées.'}, status=405)
+
+    try:
+        payload = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'JSON invalide.'}, status=400)
+
+    # Appel à votre fonction d’API externe
+    result = post_review('/post-review', payload)
+
+    return JsonResponse({
+        'status': 'success',
+        'api_response': result
+    }, status=200)
