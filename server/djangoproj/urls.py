@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.generic.base import TemplateView  # Added import statement
 from djangoapp import views  # Import custom views from djangoapp
 
 urlpatterns = [
@@ -29,6 +30,14 @@ urlpatterns = [
     path('register/', TemplateView.as_view(template_name="index.html"), name='register'),
     path('logout/', TemplateView.as_view(template_name="index.html"), name='logout'),
     path('dealers/', TemplateView.as_view(template_name="index.html"), name='dealers'),
-    path('dealer/<int:dealer_id>/', TemplateView.as_view(template_name="index.html"), name='dealer_detail'),
-    path('postreview/<int:dealer_id>/', TemplateView.as_view(template_name="index.html"), name='post_review'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  
+    path(
+        'dealer/<int:dealer_id>/',
+        TemplateView.as_view(template_name="index.html"),
+        name='dealer_detail'
+    ),
+    path(
+        'postreview/<int:dealer_id>/',
+        TemplateView.as_view(template_name="index.html"),
+        name='post_review'
+    ),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
