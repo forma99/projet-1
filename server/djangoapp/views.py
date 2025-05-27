@@ -110,18 +110,22 @@ def get_dealerships(request, state="All"):
 # Create a `get_dealer_reviews` view to render the reviews of a dealer
 @csrf_exempt
 def get_dealer_reviews(request, dealer_id):
-    # if dealer id has been provided
-    if(dealer_id):
-        endpoint = "/fetchReviews/dealer/"+str(dealer_id)
+    if dealer_id:
+        endpoint = f"/fetchReviews/dealer/{dealer_id}"
         reviews = get_request(endpoint)
-        for review_detail in reviews:
-            response = analyze_review_sentiments(review_detail['review'])
-            print(response)
-            review_detail['sentiment'] = response['sentiment']
-        return JsonResponse({"status":200,"reviews":reviews})
-    else:
-        return JsonResponse({"status":400,"message":"Bad Request"})
 
+        for review_detail in reviews:
+            response = analyze_review_sentiments(review_detail.get('review', ''))
+            print("Sentiment response:", response)
+
+            if response and isinstance(response, dict) and 'sentiment' in response:
+                review_detail['sentiment'] = response['sentiment']
+            else:
+                review_detail['sentiment'] = "neutral"  # Valeur par défaut
+
+        return JsonResponse({"status": 200, "reviews": reviews})
+    else:
+        return JsonResponse({"status": 400, "message": "Bad Request"})
 
 
 # Create a `get_dealer_details` view to render the dealer details
@@ -141,34 +145,29 @@ def get_dealer_details(request, dealer_id):
 
 @csrf_exempt
 def add_review(request):
-    """
-    Reçoit une requête POST contenant le JSON d’un avis et la transmet via post_review
-    Ex. du corps (application/json) :
-    {
-      "name": "Jean Dupont",
-      "dealership": 15,
-      "review": "Super expérience !",
-      "purchase": true,
-      "purchase_date": "2025-05-01",
-      "car_make": "Toyota",
-      "car_model": "Corolla",
-      "car_year": 2021
-    }
-    """
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Seules les requêtes POST sont autorisées.'}, status=405)
-
-    try:
-        payload = json.loads(request.body)
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'JSON invalide.'}, status=400)
-
-    # Appel à votre fonction d’API externe
-    result = post_review('/post-review', payload)
-
-    return JsonResponse({
-        'status': 'success',
-        'api_response': result
-    }, status=200)
-
-
+    if request.user.is_authenticated:
+        data = json.loads(request.body)
+        print(data)  # Log the incoming data for debugging
+        try:
+            response = post_review(data)
+            if response.get("status") == 200:
+                print("Review posted successfully:", response)
+            return JsonResponse(
+                {
+                    "status": 200,
+                    "message": "Review posted successfully",
+                    "review": data
+                })
+        except Exception as e:
+            print(f"Error in posting review: {e}")
+            return JsonResponse(
+                {
+                    "status": 401,
+                    "message": "Error in posting review"
+                })
+    else:
+        return JsonResponse(
+            {
+                "status": 403,
+                "message": "Unauthorized"
+            })
